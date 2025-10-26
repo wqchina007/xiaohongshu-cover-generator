@@ -28,11 +28,11 @@
         .control-panel {
             flex: 0 0 350px;
             background: #ffffff;
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 32px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            box-shadow: 0 12px 48px rgba(0,0,0,0.06);
             height: fit-content;
-            border: 1px solid #f0f0f0;
+            border: 1px solid #f8f8f8;
         }
 
         .preview-container {
@@ -46,7 +46,7 @@
             width: 360px;
             height: 480px;
             background: white;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
             overflow: hidden;
             position: relative;
         }
@@ -127,32 +127,37 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 30px 40px 40px;
+            padding: 32px 40px 40px;
+            transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .author-info {
             font-size: 14px;
             color: #4a5568;
             margin-bottom: 20px;
-            font-weight: 500;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: color 0.3s ease;
         }
 
         .title-text {
-            font-size: 35px;
-            font-weight: 600;
+            font-size: 36px;
+            font-weight: 700;
             color: #2d3748;
             line-height: 1.1;
-            letter-spacing: -1px;
+            letter-spacing: -0.8px;
             margin-bottom: 20px;
             word-break: break-word;
             text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            transition: color 0.3s ease;
         }
 
         .summary-text {
             font-size: 16px;
             color: #4a5568;
-            line-height: 1.4;
+            line-height: 1.5;
             font-weight: 500;
+            transition: color 0.3s ease;
         }
 
         .form-group {
@@ -171,22 +176,22 @@
         .form-group input,
         .form-group textarea {
             width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #e1e1e1;
-            border-radius: 8px;
+            padding: 14px 18px;
+            border: 1px solid #f0f0f0;
+            border-radius: 12px;
             font-size: 14px;
             font-family: inherit;
-            transition: all 0.2s ease;
-            background: #fafafa;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #fcfcfc;
             color: #333;
         }
 
         .form-group input:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: #2563eb;
+            border-color: #e0e0e0;
             background: #ffffff;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
         }
 
         .form-group textarea {
@@ -208,15 +213,16 @@
 
         .file-input-label {
             display: block;
-            padding: 12px;
+            padding: 14px 18px;
             background: #000000;
             color: white !important;
             text-align: center;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid #000000;
             font-weight: 500;
+            font-size: 14px;
         }
 
         .file-input-label:hover {
@@ -231,23 +237,24 @@
 
         .export-btn {
             width: 100%;
-            padding: 14px;
-            background: #22c55e;
+            padding: 16px;
+            background: #000000;
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 12px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             margin-top: 10px;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
         }
 
         .export-btn:hover {
-            background: #16a34a;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+            background: #333333;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
         }
 
         .ai-prompt-section {
@@ -353,6 +360,26 @@
             <div class="form-group">
                 <label for="summaryInput">摘要信息</label>
                 <textarea id="summaryInput" placeholder="▎请输入摘要"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>文字区域背景色</label>
+                <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 12px;">
+                    <input type="color" id="gradientStart" value="#f5f7fa" style="width: 60px; height: 40px; border: none; border-radius: 8px; cursor: pointer;">
+                    <span style="font-size: 14px; color: #666;">起始色</span>
+                    <input type="color" id="gradientEnd" value="#c3cfe2" style="width: 60px; height: 40px; border: none; border-radius: 8px; cursor: pointer;">
+                    <span style="font-size: 14px; color: #666;">结束色</span>
+                </div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button class="gradient-preset" data-start="#f5f7fa" data-end="#c3cfe2" style="width: 30px; height: 30px; border: none; border-radius: 6px; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); cursor: pointer; transition: transform 0.2s;" title="默认"></button>
+                    <button class="gradient-preset" data-start="#667eea" data-end="#764ba2" style="width: 30px; height: 30px; border: none; border-radius: 6px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); cursor: pointer; transition: transform 0.2s;" title="紫蓝渐变"></button>
+                    <button class="gradient-preset" data-start="#f093fb" data-end="#f5576c" style="width: 30px; height: 30px; border: none; border-radius: 6px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); cursor: pointer; transition: transform 0.2s;" title="粉红渐变"></button>
+                    <button class="gradient-preset" data-start="#4facfe" data-end="#00f2fe" style="width: 30px; height: 30px; border: none; border-radius: 6px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); cursor: pointer; transition: transform 0.2s;" title="蓝青渐变"></button>
+                    <button class="gradient-preset" data-start="#43e97b" data-end="#38f9d7" style="width: 30px; height: 30px; border: none; border-radius: 6px; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); cursor: pointer; transition: transform 0.2s;" title="绿青渐变"></button>
+                    <button class="gradient-preset" data-start="#fa709a" data-end="#fee140" style="width: 30px; height: 30px; border: none; border-radius: 6px; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); cursor: pointer; transition: transform 0.2s;" title="粉黄渐变"></button>
+                    <button class="gradient-preset" data-start="#a8edea" data-end="#fed6e3" style="width: 30px; height: 30px; border: none; border-radius: 6px; background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); cursor: pointer; transition: transform 0.2s;" title="淡彩渐变"></button>
+                    <button class="gradient-preset" data-start="#ffecd2" data-end="#fcb69f" style="width: 30px; height: 30px; border: none; border-radius: 6px; background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); cursor: pointer; transition: transform 0.2s;" title="暖橙渐变"></button>
+                </div>
             </div>
 
             <button class="export-btn" onclick="exportCover()">导出封面图</button>
@@ -599,6 +626,76 @@
                 imageSection.appendChild(avatarOverlay);
             }
         }
+
+        // 渐变色更新函数
+        function updateGradientBackground() {
+            const startColor = document.getElementById('gradientStart').value;
+            const endColor = document.getElementById('gradientEnd').value;
+            const textSection = document.querySelector('.text-section');
+            
+            textSection.style.background = `linear-gradient(135deg, ${startColor} 0%, ${endColor} 100%)`;
+            
+            // 根据背景色调整文字颜色以保持对比度
+            adjustTextColor(startColor, endColor);
+        }
+
+        // 根据背景色调整文字颜色
+        function adjustTextColor(startColor, endColor) {
+            // 简单的亮度计算函数
+            function getBrightness(hexColor) {
+                const rgb = parseInt(hexColor.slice(1), 16);
+                const r = (rgb >> 16) & 255;
+                const g = (rgb >> 8) & 255;
+                const b = rgb & 255;
+                return (r * 299 + g * 587 + b * 114) / 1000;
+            }
+            
+            const startBrightness = getBrightness(startColor);
+            const endBrightness = getBrightness(endColor);
+            const avgBrightness = (startBrightness + endBrightness) / 2;
+            
+            const textSection = document.querySelector('.text-section');
+            const authorInfo = document.querySelector('.author-info');
+            const titleText = document.querySelector('.title-text');
+            const summaryText = document.querySelector('.summary-text');
+            
+            if (avgBrightness < 128) {
+                // 深色背景，使用浅色文字
+                authorInfo.style.color = 'rgba(255,255,255,0.9)';
+                titleText.style.color = '#ffffff';
+                titleText.style.textShadow = '0 1px 2px rgba(0,0,0,0.3)';
+                summaryText.style.color = 'rgba(255,255,255,0.85)';
+            } else {
+                // 浅色背景，使用深色文字
+                authorInfo.style.color = 'rgba(45,55,72,0.9)';
+                titleText.style.color = '#2d3748';
+                titleText.style.textShadow = '0 1px 2px rgba(0,0,0,0.1)';
+                summaryText.style.color = 'rgba(45,55,72,0.85)';
+            }
+        }
+
+        // 渐变色选择器事件监听
+        document.getElementById('gradientStart').addEventListener('input', updateGradientBackground);
+        document.getElementById('gradientEnd').addEventListener('input', updateGradientBackground);
+
+        // 预设渐变色按钮事件监听
+        document.querySelectorAll('.gradient-preset').forEach(button => {
+            button.addEventListener('click', function() {
+                const startColor = this.getAttribute('data-start');
+                const endColor = this.getAttribute('data-end');
+                
+                document.getElementById('gradientStart').value = startColor;
+                document.getElementById('gradientEnd').value = endColor;
+                
+                updateGradientBackground();
+                
+                // 添加点击反馈效果
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
     </script>
 </body>
 </html>
