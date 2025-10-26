@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小红书封面图生成器</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f7;
+            min-height: 100vh;
+            margin: 0;
+            padding: 60px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: fit-content;
+            margin: 0 auto;
+            display: flex;
+            gap: 48px;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 48px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .control-panel {
+            width: 360px;
+            background: #fafafa;
+            border-radius: 10px;
+            padding: 32px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            height: fit-content;
+            color: #2d3748;
+            flex-shrink: 0;
+        }
+
+        .preview-container {
+            flex: 0 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .cover-preview {
+            width: 360px;
+            height: 480px;
+            background: white;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .cover-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .image-section {
+            height: 185px;
+            position: relative;
+            overflow: hidden;
+            background: #f8f8f8;
+        }
+
+        .avatar-overlay {
+            position: absolute;
+            bottom: 15px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.95);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            overflow: hidden;
+            z-index: 10;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .avatar-overlay img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block; /* 防止图片底部空隙 */
+        }
+
+        .avatar-overlay::before {
+            content: '👤';
+            position: absolute;
+            font-size: 24px;
+            color: rgba(255,255,255,0.8);
+            z-index: 1;
+        }
+
+        .avatar-overlay img {
+            position: relative;
+            z-index: 2;
+        }
+
+        .image-section img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .text-section {
+            height: 295px;
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 35px 40px 40px;
+        }
+
+        .author-info {
+            font-size: 14px;
+            color: #718096;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .title-text {
+            font-size: 35px;
+            font-weight: 600;
+            color: #1a202c;
+            line-height: 1.1;
+            letter-spacing: -1px;
+            margin-bottom: 20px;
+            word-break: break-word;
+        }
+
+        .summary-text {
+            font-size: 16px;
+            color: #4a5568;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #4a5568;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            background: #ffffff;
+            color: #2d3748;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #718096;
+            background: #ffffff;
+            box-shadow: 0 0 0 2px rgba(113, 128, 150, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 14px 20px;
+            background: #4a5568;
+            color: #ffffff !important;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(74, 85, 104, 0.2);
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .file-input-label:hover {
+            background: #2d3748;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(74, 85, 104, 0.3);
+            color: #ffffff !important;
+        }
+
+        .export-btn {
+            width: 100%;
+            padding: 16px;
+            background: #2d3748;
+            color: #ffffff !important;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(45, 55, 72, 0.2);
+        }
+
+        .export-btn:hover {
+            background: #1a202c;
+            color: #ffffff !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(45, 55, 72, 0.3);
+        }
+
+        .export-btn:active {
+            transform: translateY(0);
+        }
+
+        .export-btn:hover {
+            background: #218838;
+        }
+
+        .color-picker-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .color-presets {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .color-preset {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #e2e8f0;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .color-preset:hover {
+            border-color: #667eea;
+            transform: scale(1.1);
+        }
+
+        .color-preset.active {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        #customColor, #customColor2 {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 0;
+            background: none;
+        }
+
+        #customColor::-webkit-color-swatch-wrapper, 
+        #customColor2::-webkit-color-swatch-wrapper {
+            padding: 0;
+            border-radius: 50%;
+        }
+
+        #customColor::-webkit-color-swatch, 
+        #customColor2::-webkit-color-swatch {
+            border: 2px solid #e2e8f0;
+            border-radius: 50%;
+        }
+
+        .color-apply-btn {
+            padding: 8px 16px;
+            background: #a0aec0;
+            color: #ffffff !important;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .color-apply-btn:hover {
+            background: #718096;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(160, 174, 192, 0.3);
+            color: #ffffff !important;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+                padding: 20px 10px;
+            }
+            
+            .control-panel {
+                width: 100%;
+                max-width: 400px;
+                padding: 25px;
+            }
+            
+            .preview-container {
+                padding: 0;
+                margin-top: 0;
+            }
+            
+            .cover-preview {
+                width: 320px;
+                height: 427px;
+            }
+            
+            .image-section {
+                height: 165px;
+            }
+            
+            .text-section {
+                height: 262px;
+                padding: 25px 30px 30px;
+            }
+            
+            .title-text {
+                font-size: 28px;
+                line-height: 1.2;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .control-panel {
+                padding: 20px;
+            }
+            
+            .cover-preview {
+                width: 280px;
+                height: 373px;
+            }
+            
+            .image-section {
+                height: 145px;
+            }
+            
+            .text-section {
+                height: 228px;
+                padding: 20px 25px 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 10px;
+            }
+            
+            .control-panel {
+                padding: 20px;
+            }
+            
+            .cover-preview {
+                width: 280px;
+                height: 373px;
+            }
+        }
+            
+            .cover-preview {
+                width: 300px;
+                height: 400px;
+            }
+            
+            .image-section {
+                height: 155px;
+            }
+            
+            .text-section {
+                height: 245px;
+                padding: 25px 30px 30px;
+            }
+            
+            .title-text {
+                font-size: 28px;
+                line-height: 1.2;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="control-panel">
+            <h2 style="margin-bottom: 24px; color: #2d3748; font-size: 24px; font-weight: 600;">小红书封面图生成器</h2>
+            
+            <div class="form-group">
+                <label for="imageUpload">主题图片上传</label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="imageUpload" accept="image/*">
+                    <label for="imageUpload" class="file-input-label">选择主题图片</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="avatarUpload">头像上传</label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="avatarUpload" accept="image/*">
+                    <label for="avatarUpload" class="file-input-label">选择头像图片</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="authorInput">作者信息</label>
+                <input type="text" id="authorInput" placeholder="@ AI产品自由" value="@ AI产品自由">
+            </div>
+
+            <div class="form-group">
+                <label for="titleInput">主标题</label>
+                <textarea id="titleInput" placeholder="输入主标题内容，建议8-12字一行"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="summaryInput">摘要信息</label>
+                <textarea id="summaryInput" placeholder="▎请输入摘要"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>文字区域背景色</label>
+                <div class="color-picker-container">
+                    <div class="color-presets">
+                        <div class="color-preset active" style="background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%)" data-gradient="linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%)" title="高级灰白"></div>
+                        <div class="color-preset" style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%)" data-gradient="linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%)" title="优雅灰"></div>
+                        <div class="color-preset" style="background: linear-gradient(135deg, #d6e6f0 0%, #b8c5d1 100%)" data-gradient="linear-gradient(135deg, #d6e6f0 0%, #b8c5d1 100%)" title="雾霾蓝"></div>
+                        <div class="color-preset" style="background: linear-gradient(135deg, #e6d6f0 0%, #d1b8c5 100%)" data-gradient="linear-gradient(135deg, #e6d6f0 0%, #d1b8c5 100%)" title="莫兰迪紫"></div>
+                        <div class="color-preset" style="background: linear-gradient(135deg, #d6f0e6 0%, #b8d1c5 100%)" data-gradient="linear-gradient(135deg, #d6f0e6 0%, #b8d1c5 100%)" title="薄荷绿灰"></div>
+                        <div class="color-preset" style="background: linear-gradient(135deg, #f0e6d6 0%, #c5d1b8 100%)" data-gradient="linear-gradient(135deg, #f0e6d6 0%, #c5d1b8 100%)" title="暖米灰"></div>
+                        <div class="color-preset" style="background: linear-gradient(135deg, #f0d6d6 0%, #d1b8b8 100%)" data-gradient="linear-gradient(135deg, #f0d6d6 0%, #d1b8b8 100%)" title="玫瑰灰"></div>
+                        <div class="color-preset" style="background: linear-gradient(135deg, #d6d6f0 0%, #b8b8d1 100%)" data-gradient="linear-gradient(135deg, #d6d6f0 0%, #b8b8d1 100%)" title="薰衣草灰"></div>
+                    </div>
+                    <input type="color" id="customColor" value="#f7fafc" title="自定义颜色">
+                    <input type="color" id="customColor2" value="#edf2f7" title="自定义颜色2">
+                    <button type="button" id="applyCustomColor" class="color-apply-btn">应用</button>
+                </div>
+            </div>
+
+            <button class="export-btn" onclick="exportCover()">导出封面图</button>
+
+            </div>
+        </div>
+
+        <div class="preview-container">
+            <div class="cover-preview" id="coverPreview">
+                <div class="cover-content">
+                    <div class="image-section" id="imageSection">
+                        <div class="image-placeholder">
+                            点击左侧上传主题图片<br>
+                            建议尺寸：1080×720px<br>
+                            支持 JPG、PNG 格式
+                        </div>
+                    </div>
+                    <div class="text-section">
+                        <div class="author-info" id="authorDisplay">@ AI产品自由</div>
+                        <div class="title-text" id="titleDisplay">请输入主标题</div>
+                        <div class="summary-text" id="summaryDisplay">▎请输入摘要</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 图片上传处理
+        document.getElementById('imageUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.onload = function() {
+                        // 保存头像元素的当前状态
+                        const avatarOverlay = document.getElementById('avatarOverlay');
+                        const avatarDisplay = avatarOverlay.style.display;
+                        const avatarImgSrc = document.getElementById('avatarImg').src;
+                        
+                        // 清空并添加新图片
+                        document.getElementById('imageSection').innerHTML = '';
+                        document.getElementById('imageSection').appendChild(img);
+                        
+                        // 重新创建头像元素
+                        const newAvatarOverlay = document.createElement('div');
+                        newAvatarOverlay.className = 'avatar-overlay';
+                        newAvatarOverlay.id = 'avatarOverlay';
+                        newAvatarOverlay.style.display = avatarDisplay;
+                        
+                        const newAvatarImg = document.createElement('img');
+                        newAvatarImg.id = 'avatarImg';
+                        newAvatarImg.alt = '头像';
+                        if (avatarDisplay === 'block') {
+                            newAvatarImg.src = avatarImgSrc;
+                        }
+                        
+                        newAvatarOverlay.appendChild(newAvatarImg);
+                        document.getElementById('imageSection').appendChild(newAvatarOverlay);
+                    };
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 头像上传处理
+        document.getElementById('avatarUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    let avatarImg = document.getElementById('avatarImg');
+                    let avatarOverlay = document.getElementById('avatarOverlay');
+                    
+                    // 如果头像元素不存在，创建它们
+                    if (!avatarOverlay) {
+                        avatarOverlay = document.createElement('div');
+                        avatarOverlay.className = 'avatar-overlay';
+                        avatarOverlay.id = 'avatarOverlay';
+                        
+                        avatarImg = document.createElement('img');
+                        avatarImg.id = 'avatarImg';
+                        avatarImg.alt = '头像';
+                        
+                        avatarOverlay.appendChild(avatarImg);
+                        document.getElementById('imageSection').appendChild(avatarOverlay);
+                    } else if (!avatarImg) {
+                        avatarImg = document.createElement('img');
+                        avatarImg.id = 'avatarImg';
+                        avatarImg.alt = '头像';
+                        avatarOverlay.appendChild(avatarImg);
+                    }
+                    
+                    avatarImg.src = e.target.result;
+                    avatarOverlay.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 文字输入实时更新
+        document.getElementById('authorInput').addEventListener('input', function(e) {
+            document.getElementById('authorDisplay').textContent = e.target.value || '@ AI产品自由';
+        });
+
+        document.getElementById('titleInput').addEventListener('input', function(e) {
+            const title = e.target.value || '请输入主标题';
+            document.getElementById('titleDisplay').textContent = title;
+            // 智能分行处理
+            autoFormatTitle(title);
+        });
+
+        document.getElementById('summaryInput').addEventListener('input', function(e) {
+            document.getElementById('summaryDisplay').textContent = e.target.value || '▎请输入摘要';
+        });
+
+        // 智能分行算法
+        function autoFormatTitle(text) {
+            if (text.length <= 12) {
+                document.getElementById('titleDisplay').style.fontSize = '35px';
+                document.getElementById('titleDisplay').style.lineHeight = '1.1';
+            } else if (text.length <= 24) {
+                document.getElementById('titleDisplay').style.fontSize = '32px';
+                document.getElementById('titleDisplay').style.lineHeight = '1.2';
+            } else {
+                document.getElementById('titleDisplay').style.fontSize = '28px';
+                document.getElementById('titleDisplay').style.lineHeight = '1.3';
+            }
+        }
+
+        // 导出封面图功能
+        async function exportCover() {
+            const coverElement = document.getElementById('coverPreview');
+            
+            try {
+                // 显示加载状态
+                const exportBtn = document.querySelector('.export-btn');
+                const originalText = exportBtn.textContent;
+                exportBtn.textContent = '生成中...';
+                exportBtn.disabled = true;
+                
+                // 使用html2canvas进行高质量截图
+                const canvas = await html2canvas(coverElement, {
+                    scale: 3, // 3倍放大保证清晰度
+                    width: 360, // 保持预览的实际尺寸
+                    height: 480,
+                    backgroundColor: null, // 不设置背景色，使用元素本身的背景
+                    useCORS: true,
+                    allowTaint: true,
+                    logging: false,
+                    imageTimeout: 0,
+                    removeContainer: true,
+                    // 优化头像渲染
+                    onclone: function(clonedDoc) {
+                        const avatarOverlays = clonedDoc.querySelectorAll('.avatar-overlay');
+                        avatarOverlays.forEach(avatar => {
+                            // 确保头像尺寸比例正确
+                            avatar.style.width = '60px';
+                            avatar.style.height = '60px';
+                            avatar.style.borderRadius = '50%';
+                            avatar.style.overflow = 'hidden';
+                            
+                            const img = avatar.querySelector('img');
+                            if (img) {
+                                img.style.width = '100%';
+                                img.style.height = '100%';
+                                img.style.objectFit = 'cover';
+                            }
+                        });
+                    }
+                });
+                
+                // 创建一个新的canvas用于最终输出
+                const finalCanvas = document.createElement('canvas');
+                finalCanvas.width = 1080;
+                finalCanvas.height = 1440;
+                const finalCtx = finalCanvas.getContext('2d');
+                
+                // 使用更平滑的缩放算法
+                finalCtx.imageSmoothingEnabled = true;
+                finalCtx.imageSmoothingQuality = 'high';
+                
+                // 将截图绘制到最终尺寸的canvas上
+                finalCtx.drawImage(canvas, 0, 0, 1080, 1440);
+                
+                // 转换为blob并下载
+                finalCanvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.download = '小红书封面_' + new Date().getTime() + '.png';
+                    link.href = url;
+                    link.click();
+                    
+                    // 清理
+                    URL.revokeObjectURL(url);
+                    
+                    // 恢复按钮状态
+                    exportBtn.textContent = originalText;
+                    exportBtn.disabled = false;
+                    
+                    alert('封面图导出成功！');
+                }, 'image/png', 0.95);
+                
+            } catch (error) {
+                console.error('导出失败:', error);
+                alert('导出失败，请重试');
+                
+                // 恢复按钮状态
+                const exportBtn = document.querySelector('.export-btn');
+                exportBtn.textContent = '导出封面图';
+                exportBtn.disabled = false;
+            }
+        }
+
+        // 复制AI提示词
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 确保头像元素存在
+            ensureAvatarElements();
+            
+            // 初始化颜色选择器
+            initColorPicker();
+            
+            // 设置默认示例文本
+            document.getElementById('titleInput').value = 'AI工具让创作更简单高效';
+            document.getElementById('summaryInput').value = '▎探索最新AI创作工具，提升内容制作效率';
+            
+            // 触发更新
+            document.getElementById('titleInput').dispatchEvent(new Event('input'));
+            document.getElementById('summaryInput').dispatchEvent(new Event('input'));
+        });
+
+        // 初始化颜色选择器
+        function initColorPicker() {
+            const colorPresets = document.querySelectorAll('.color-preset');
+            const textSection = document.querySelector('.text-section');
+            
+            // 设置默认选中状态
+            colorPresets[0].classList.add('active');
+            
+            // 预设颜色点击事件
+            colorPresets.forEach(preset => {
+                preset.addEventListener('click', function() {
+                    // 移除所有active状态
+                    colorPresets.forEach(p => p.classList.remove('active'));
+                    // 添加active状态
+                    this.classList.add('active');
+                    
+                    // 应用渐变背景
+                    const gradient = this.dataset.gradient;
+                    textSection.style.background = gradient;
+                    
+                    // 更新自定义颜色输入框
+                    const colors = gradient.match(/#[a-fA-F0-9]{6}/g);
+                    if (colors && colors.length >= 2) {
+                        document.getElementById('customColor').value = colors[0];
+                        document.getElementById('customColor2').value = colors[1];
+                    }
+                });
+            });
+            
+            // 自定义颜色应用按钮
+            document.getElementById('applyCustomColor').addEventListener('click', function() {
+                const color1 = document.getElementById('customColor').value;
+                const color2 = document.getElementById('customColor2').value;
+                const gradient = `linear-gradient(135deg, ${color1} 0%, ${color2} 100%)`;
+                
+                textSection.style.background = gradient;
+                
+                // 移除所有预设的active状态
+                colorPresets.forEach(p => p.classList.remove('active'));
+            });
+            
+            // 自定义颜色输入框变化时实时预览
+            document.getElementById('customColor').addEventListener('input', function() {
+                const color1 = this.value;
+                const color2 = document.getElementById('customColor2').value;
+                const gradient = `linear-gradient(135deg, ${color1} 0%, ${color2} 100%)`;
+                textSection.style.background = gradient;
+            });
+            
+            document.getElementById('customColor2').addEventListener('input', function() {
+                const color1 = document.getElementById('customColor').value;
+                const color2 = this.value;
+                const gradient = `linear-gradient(135deg, ${color1} 0%, ${color2} 100%)`;
+                textSection.style.background = gradient;
+            });
+        }
+
+        // 确保头像元素存在的函数
+        function ensureAvatarElements() {
+            const imageSection = document.getElementById('imageSection');
+            let avatarOverlay = document.getElementById('avatarOverlay');
+            
+            if (!avatarOverlay) {
+                avatarOverlay = document.createElement('div');
+                avatarOverlay.className = 'avatar-overlay';
+                avatarOverlay.id = 'avatarOverlay';
+                avatarOverlay.style.display = 'none';
+                
+                const avatarImg = document.createElement('img');
+                avatarImg.id = 'avatarImg';
+                avatarImg.alt = '头像';
+                
+                avatarOverlay.appendChild(avatarImg);
+                imageSection.appendChild(avatarOverlay);
+            }
+        }
+    </script>
+</body>
+</html>
