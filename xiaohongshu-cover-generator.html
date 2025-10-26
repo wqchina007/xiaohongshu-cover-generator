@@ -14,53 +14,39 @@
 
         body {
             font-family: 'PingFang SC', 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f7;
-            min-height: 100vh;
-            margin: 0;
-            padding: 60px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: #f5f5f5;
+            padding: 20px;
         }
 
         .container {
-            width: fit-content;
+            max-width: 1200px;
             margin: 0 auto;
             display: flex;
-            gap: 48px;
-            align-items: flex-start;
-            justify-content: center;
-            padding: 48px;
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            gap: 30px;
         }
 
         .control-panel {
-            width: 360px;
-            background: #fafafa;
-            border-radius: 10px;
-            padding: 32px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            flex: 0 0 350px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             height: fit-content;
-            color: #2d3748;
-            flex-shrink: 0;
+            color: white;
         }
 
         .preview-container {
-            flex: 0 0 auto;
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 0;
-            padding: 0;
         }
 
         .cover-preview {
             width: 360px;
             height: 480px;
             background: white;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
             overflow: hidden;
             position: relative;
         }
@@ -73,7 +59,7 @@
         }
 
         .image-section {
-            height: 185px;
+            height: 240px;
             position: relative;
             overflow: hidden;
             background: #f8f8f8;
@@ -81,10 +67,10 @@
 
         .avatar-overlay {
             position: absolute;
-            bottom: 15px;
+            bottom: 20px;
             left: 20px;
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             border: 3px solid rgba(255,255,255,0.95);
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -94,7 +80,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
+            flex-shrink: 0; /* 防止压缩 */
         }
 
         .avatar-overlay img {
@@ -136,17 +122,17 @@
         }
 
         .text-section {
-            height: 295px;
-            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            height: 240px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 35px 40px 40px;
+            padding: 30px 40px 40px;
         }
 
         .author-info {
             font-size: 14px;
-            color: #718096;
+            color: #4a5568;
             margin-bottom: 20px;
             font-weight: 500;
         }
@@ -154,17 +140,18 @@
         .title-text {
             font-size: 35px;
             font-weight: 600;
-            color: #1a202c;
+            color: #2d3748;
             line-height: 1.1;
             letter-spacing: -1px;
             margin-bottom: 20px;
             word-break: break-word;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
         .summary-text {
             font-size: 16px;
             color: #4a5568;
-            line-height: 1.5;
+            line-height: 1.4;
             font-weight: 500;
         }
 
@@ -176,30 +163,28 @@
             display: block;
             margin-bottom: 8px;
             font-weight: 500;
-            color: #4a5568;
+            color: white;
             font-size: 14px;
         }
 
         .form-group input,
         .form-group textarea {
             width: 100%;
-            padding: 14px 16px;
-            border: 1px solid #cbd5e0;
-            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 6px;
             font-size: 14px;
             font-family: inherit;
-            transition: all 0.2s ease;
-            background: #ffffff;
-            color: #2d3748;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+            transition: border-color 0.2s;
+            background: rgba(255,255,255,0.1);
+            color: white;
         }
 
         .form-group input:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: #718096;
-            background: #ffffff;
-            box-shadow: 0 0 0 2px rgba(113, 128, 150, 0.1);
+            border-color: rgba(255,255,255,0.6);
+            background: rgba(255,255,255,0.15);
         }
 
         .form-group textarea {
@@ -221,204 +206,85 @@
 
         .file-input-label {
             display: block;
-            padding: 14px 20px;
-            background: #4a5568;
-            color: #ffffff !important;
+            padding: 12px;
+            background: rgba(255,255,255,0.2);
+            color: white;
             text-align: center;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            border: none;
-            font-weight: 500;
-            box-shadow: 0 2px 8px rgba(74, 85, 104, 0.2);
-            font-size: 14px;
-            line-height: 1.4;
+            transition: background-color 0.2s;
+            border: 1px solid rgba(255,255,255,0.3);
         }
 
         .file-input-label:hover {
-            background: #2d3748;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(74, 85, 104, 0.3);
-            color: #ffffff !important;
+            background: rgba(255,255,255,0.3);
         }
 
         .export-btn {
             width: 100%;
-            padding: 16px;
-            background: #2d3748;
-            color: #ffffff !important;
+            padding: 14px;
+            background: #28a745;
+            color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 20px;
-            box-shadow: 0 2px 8px rgba(45, 55, 72, 0.2);
-        }
-
-        .export-btn:hover {
-            background: #1a202c;
-            color: #ffffff !important;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(45, 55, 72, 0.3);
-        }
-
-        .export-btn:active {
-            transform: translateY(0);
+            transition: background-color 0.2s;
+            margin-top: 10px;
         }
 
         .export-btn:hover {
             background: #218838;
         }
 
-        .color-picker-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
+        .ai-prompt-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
         }
 
-        .color-presets {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
+        .ai-prompt-section h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: white;
         }
 
-        .color-preset {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid #e2e8f0;
-            transition: all 0.2s ease;
-            position: relative;
-        }
-
-        .color-preset:hover {
-            border-color: #667eea;
-            transform: scale(1.1);
-        }
-
-        .color-preset.active {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
-        }
-
-        #customColor, #customColor2 {
-            width: 40px;
-            height: 40px;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            padding: 0;
-            background: none;
-        }
-
-        #customColor::-webkit-color-swatch-wrapper, 
-        #customColor2::-webkit-color-swatch-wrapper {
-            padding: 0;
-            border-radius: 50%;
-        }
-
-        #customColor::-webkit-color-swatch, 
-        #customColor2::-webkit-color-swatch {
-            border: 2px solid #e2e8f0;
-            border-radius: 50%;
-        }
-
-        .color-apply-btn {
-            padding: 8px 16px;
-            background: #a0aec0;
-            color: #ffffff !important;
-            border: none;
+        .prompt-template {
+            background: rgba(255,255,255,0.1);
+            padding: 12px;
             border-radius: 6px;
             font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-weight: 500;
+            line-height: 1.4;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
-        .color-apply-btn:hover {
-            background: #718096;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(160, 174, 192, 0.3);
-            color: #ffffff !important;
+        .copy-prompt-btn {
+            width: 100%;
+            padding: 8px;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .copy-prompt-btn:hover {
+            background: rgba(255,255,255,0.25);
         }
 
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
-                align-items: center;
-                gap: 20px;
-                padding: 20px 10px;
             }
             
             .control-panel {
-                width: 100%;
-                max-width: 400px;
-                padding: 25px;
+                flex: none;
             }
-            
-            .preview-container {
-                padding: 0;
-                margin-top: 0;
-            }
-            
-            .cover-preview {
-                width: 320px;
-                height: 427px;
-            }
-            
-            .image-section {
-                height: 165px;
-            }
-            
-            .text-section {
-                height: 262px;
-                padding: 25px 30px 30px;
-            }
-            
-            .title-text {
-                font-size: 28px;
-                line-height: 1.2;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .control-panel {
-                padding: 20px;
-            }
-            
-            .cover-preview {
-                width: 280px;
-                height: 373px;
-            }
-            
-            .image-section {
-                height: 145px;
-            }
-            
-            .text-section {
-                height: 228px;
-                padding: 20px 25px 25px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 20px 10px;
-            }
-            
-            .control-panel {
-                padding: 20px;
-            }
-            
-            .cover-preview {
-                width: 280px;
-                height: 373px;
-            }
-        }
             
             .cover-preview {
                 width: 300px;
@@ -426,12 +292,12 @@
             }
             
             .image-section {
-                height: 155px;
+                height: 200px;
             }
             
             .text-section {
-                height: 245px;
-                padding: 25px 30px 30px;
+                height: 200px;
+                padding: 20px 30px 30px;
             }
             
             .title-text {
@@ -444,7 +310,7 @@
 <body>
     <div class="container">
         <div class="control-panel">
-            <h2 style="margin-bottom: 24px; color: #2d3748; font-size: 24px; font-weight: 600;">小红书封面图生成器</h2>
+            <h2 style="margin-bottom: 24px; color: white;">小红书封面图生成器</h2>
             
             <div class="form-group">
                 <label for="imageUpload">主题图片上传</label>
@@ -477,27 +343,23 @@
                 <textarea id="summaryInput" placeholder="▎请输入摘要"></textarea>
             </div>
 
-            <div class="form-group">
-                <label>文字区域背景色</label>
-                <div class="color-picker-container">
-                    <div class="color-presets">
-                        <div class="color-preset active" style="background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%)" data-gradient="linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%)" title="高级灰白"></div>
-                        <div class="color-preset" style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%)" data-gradient="linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%)" title="优雅灰"></div>
-                        <div class="color-preset" style="background: linear-gradient(135deg, #d6e6f0 0%, #b8c5d1 100%)" data-gradient="linear-gradient(135deg, #d6e6f0 0%, #b8c5d1 100%)" title="雾霾蓝"></div>
-                        <div class="color-preset" style="background: linear-gradient(135deg, #e6d6f0 0%, #d1b8c5 100%)" data-gradient="linear-gradient(135deg, #e6d6f0 0%, #d1b8c5 100%)" title="莫兰迪紫"></div>
-                        <div class="color-preset" style="background: linear-gradient(135deg, #d6f0e6 0%, #b8d1c5 100%)" data-gradient="linear-gradient(135deg, #d6f0e6 0%, #b8d1c5 100%)" title="薄荷绿灰"></div>
-                        <div class="color-preset" style="background: linear-gradient(135deg, #f0e6d6 0%, #c5d1b8 100%)" data-gradient="linear-gradient(135deg, #f0e6d6 0%, #c5d1b8 100%)" title="暖米灰"></div>
-                        <div class="color-preset" style="background: linear-gradient(135deg, #f0d6d6 0%, #d1b8b8 100%)" data-gradient="linear-gradient(135deg, #f0d6d6 0%, #d1b8b8 100%)" title="玫瑰灰"></div>
-                        <div class="color-preset" style="background: linear-gradient(135deg, #d6d6f0 0%, #b8b8d1 100%)" data-gradient="linear-gradient(135deg, #d6d6f0 0%, #b8b8d1 100%)" title="薰衣草灰"></div>
-                    </div>
-                    <input type="color" id="customColor" value="#f7fafc" title="自定义颜色">
-                    <input type="color" id="customColor2" value="#edf2f7" title="自定义颜色2">
-                    <button type="button" id="applyCustomColor" class="color-apply-btn">应用</button>
-                </div>
-            </div>
-
             <button class="export-btn" onclick="exportCover()">导出封面图</button>
 
+            <div class="ai-prompt-section">
+                <h3>AI绘图提示词模板</h3>
+                <div class="prompt-template">
+                    <strong>写实大片风格：</strong><br>
+                    cinematic photography, photorealistic, dramatic lighting, single focus element, professional composition, high quality, 1080x1440px
+                </div>
+                <div class="prompt-template">
+                    <strong>街景摄影风格：</strong><br>
+                    urban street photography, golden hour, depth of field, natural lighting, authentic moment, 1080x1440px
+                </div>
+                <div class="prompt-template">
+                    <strong>商业摄影风格：</strong><br>
+                    commercial photography, high quality, professional lighting, clean background, product focus, 1080x1440px
+                </div>
+                <button class="copy-prompt-btn" onclick="copyPrompt()">复制提示词</button>
             </div>
         </div>
 
@@ -711,13 +573,26 @@
         }
 
         // 复制AI提示词
+        function copyPrompt() {
+            const prompts = [
+                'cinematic photography, photorealistic, dramatic lighting, single focus element, professional composition, high quality, 1080x1440px',
+                'urban street photography, golden hour, depth of field, natural lighting, authentic moment, 1080x1440px',
+                'commercial photography, high quality, professional lighting, clean background, product focus, 1080x1440px'
+            ];
+            
+            const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
+            
+            navigator.clipboard.writeText(randomPrompt).then(function() {
+                alert('AI绘图提示词已复制到剪贴板！\n\n' + randomPrompt);
+            }).catch(function() {
+                alert('复制失败，请手动复制以下提示词：\n\n' + randomPrompt);
+            });
+        }
+
         // 初始化
         document.addEventListener('DOMContentLoaded', function() {
             // 确保头像元素存在
             ensureAvatarElements();
-            
-            // 初始化颜色选择器
-            initColorPicker();
             
             // 设置默认示例文本
             document.getElementById('titleInput').value = 'AI工具让创作更简单高效';
@@ -727,63 +602,6 @@
             document.getElementById('titleInput').dispatchEvent(new Event('input'));
             document.getElementById('summaryInput').dispatchEvent(new Event('input'));
         });
-
-        // 初始化颜色选择器
-        function initColorPicker() {
-            const colorPresets = document.querySelectorAll('.color-preset');
-            const textSection = document.querySelector('.text-section');
-            
-            // 设置默认选中状态
-            colorPresets[0].classList.add('active');
-            
-            // 预设颜色点击事件
-            colorPresets.forEach(preset => {
-                preset.addEventListener('click', function() {
-                    // 移除所有active状态
-                    colorPresets.forEach(p => p.classList.remove('active'));
-                    // 添加active状态
-                    this.classList.add('active');
-                    
-                    // 应用渐变背景
-                    const gradient = this.dataset.gradient;
-                    textSection.style.background = gradient;
-                    
-                    // 更新自定义颜色输入框
-                    const colors = gradient.match(/#[a-fA-F0-9]{6}/g);
-                    if (colors && colors.length >= 2) {
-                        document.getElementById('customColor').value = colors[0];
-                        document.getElementById('customColor2').value = colors[1];
-                    }
-                });
-            });
-            
-            // 自定义颜色应用按钮
-            document.getElementById('applyCustomColor').addEventListener('click', function() {
-                const color1 = document.getElementById('customColor').value;
-                const color2 = document.getElementById('customColor2').value;
-                const gradient = `linear-gradient(135deg, ${color1} 0%, ${color2} 100%)`;
-                
-                textSection.style.background = gradient;
-                
-                // 移除所有预设的active状态
-                colorPresets.forEach(p => p.classList.remove('active'));
-            });
-            
-            // 自定义颜色输入框变化时实时预览
-            document.getElementById('customColor').addEventListener('input', function() {
-                const color1 = this.value;
-                const color2 = document.getElementById('customColor2').value;
-                const gradient = `linear-gradient(135deg, ${color1} 0%, ${color2} 100%)`;
-                textSection.style.background = gradient;
-            });
-            
-            document.getElementById('customColor2').addEventListener('input', function() {
-                const color1 = document.getElementById('customColor').value;
-                const color2 = this.value;
-                const gradient = `linear-gradient(135deg, ${color1} 0%, ${color2} 100%)`;
-                textSection.style.background = gradient;
-            });
-        }
 
         // 确保头像元素存在的函数
         function ensureAvatarElements() {
