@@ -541,7 +541,6 @@
                     exportBtn.textContent = originalText;
                     exportBtn.disabled = false;
                     
-                    alert('封面图导出成功！');
                 }, 'image/png', 0.95);
                 
             } catch (error) {
@@ -553,23 +552,6 @@
                 exportBtn.textContent = '导出封面图';
                 exportBtn.disabled = false;
             }
-        }
-
-        // 复制AI提示词
-        function copyPrompt() {
-            const prompts = [
-                'cinematic photography, photorealistic, dramatic lighting, single focus element, professional composition, high quality, 1080x1440px',
-                'urban street photography, golden hour, depth of field, natural lighting, authentic moment, 1080x1440px',
-                'commercial photography, high quality, professional lighting, clean background, product focus, 1080x1440px'
-            ];
-            
-            const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
-            
-            navigator.clipboard.writeText(randomPrompt).then(function() {
-                alert('AI绘图提示词已复制到剪贴板！\n\n' + randomPrompt);
-            }).catch(function() {
-                alert('复制失败，请手动复制以下提示词：\n\n' + randomPrompt);
-            });
         }
 
         // 初始化
